@@ -1,0 +1,88 @@
+<html>
+	<head>
+	<!--
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <link rel="stylesheet" type="text/css" href="css/index.css">
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <title>Hello World</title>-->
+        <link rel="stylesheet" type="text/css" href="css/login.css">
+	</head>
+	<header>
+
+	</header>
+	<script src="js/angular.min.js"></script>
+
+<body style="background:url(img/casa3.jpg);">
+<form ng-app="Aplicacion" ng-controller="validateCtrl" name="frmValida" novalidate action="admin.html" method="post">
+	<center>
+	<p>Nombre:<br> 
+		<input type="text" name="nombre" ng-model="nombre" required>
+		<span style="color:red" ng-show="frmValida.nombre.$dirty && frmValida.nombre.$invalid">
+		<span ng-show="frmValida.nombre.$error.required"><br>El nombre del usuario es requerido.</span>			
+		</span>
+		</p>
+
+	<p>Contraseña:<br> 
+		<input type="password" name="clave" ng-model="clave" placeholder="Ingresa Contraseña" required>
+		<span style="color:red" ng-show="frmValida.clave.$dirty && frmValida.clave.$invalid">		
+		<span ng-show="frmValida.clave.$error.required"><br>La contraseña del usuario es requerida.</span>
+		</span>
+		</p>
+
+
+
+	<p>
+		<input type="submit" ng-disable="myForm.nombre.$dirty && myForm.nombre.$invalid  || myForm.clave.$dirty && myForm.clave.$invalid || myForm.clave1.$dirty && myForm.clave1.$invalid  value="Entrar" onClick="return compara(); ">
+		</p>
+		</center>
+	</form>
+	<script>
+
+		var app =angular.module('Aplicacion', []); 
+		app.controller('validateCtrl', function($scope){  //scope almacenar valores 
+			//$scope.nombre ='Rendon Mendoza Lucio';
+			//$scope.email ='jetsux60@gmail.com';
+			//$scope.fecha ='1995/07/24';
+			//$scope.direccion ='Gomez Farias';
+			//$scope.clave ='password'; 
+			//$scope.clave1 ='password';
+
+			});
+
+		function compara() { 
+
+		if ((document.frmValida.clave.value =="admin")& (document.frmValida.nombre.value =="lucio")) {
+			
+		return true; } 
+		else {
+			alert("Usuario no valido");
+			return false;			
+		}
+	}
+	</script>
+<!--
+	<table>
+		<form action="admin.html" method="post">
+			<tr>
+				<td>Usuario</td>
+				<td><input type="text" required name="usuario"></td>
+			</tr>
+			<tr>
+				<td>Password</td>
+				<td><input type="text" required name="password"></td>
+			</tr>
+				<td></td>
+				<td><input type="submit" value="Entrar"></td>
+			
+	</table>-->
+
+
+
+
+	<script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+</body>
+</html>

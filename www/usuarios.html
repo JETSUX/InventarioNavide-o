@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Esta aplicación sirve para almacenar datos en una BD.">
+
+        <link rel="stylesheet" type="text/css" href="css/index.css">
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+         <!-- cordova script (this will be a 404 during development) -->
+    
+        
+        <title>Database</title>
+       <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
+        
+        <!--  <link rel="stylesheet" href="css/personalizado.css">-->
+		<script src="js/jquery-1.11.3.min.js"></script>
+         <script src="js/jquery.mobile-1.4.5.min.js"></script>
+        <script src="cordova.js"></script>
+       
+        <!-- <script type="text/javascript" src="js/index.js"></script>-->
+        <script type="text/javascript" charset="utf-8">
+
+        // Wait for Cordova to load
+        //
+		document.addEventListener("deviceready", onDeviceReady, false);
+		var currentRow;
+		// Creando las tablas de la base de datos
+        //
+		function populateDB(tx) {
+			//alert("Se ha creado la tabla!");
+            //tx.executeSql('CREATE TABLE IF NOT EXISTS producto (id_producto INTEGER PRIMARY KEY AUTOINCREMENT, nombre, cantidad)');
+
+            tx.executeSql('SELECT * FROM producto', [], querySuccess, errorCB);
+
+
+			}
+			// Query the database
+        //
+		function queryDB(tx) {
+			tx.executeSql('SELECT * FROM producto', [], querySuccess, errorCB);
+			}
+			function searchQueryDB(tx) {
+            tx.executeSql("SELECT * FROM producto where nombre like ('%"+ document.getElementById("txtName").value + "%') and password like ('%"+ document.getElementById("txtNumber").value + "%')",[], querySuccess, errorCB);
+				}
+				// Query the success callback
+        //
+		function querySuccess(tx, results) {
+			var tblText='<table id="t01"><tr><th>ID</th> <th>PRODUCTO</th> <th>CANTIDAD</th></tr>';
+			var len = results.rows.length;
+			if (len==0){
+				alert("Entró");
+            tx.executeSql('INSERT INTO producto (nombre, cantidad) VALUES ("Árbol Navideño", "100"),("Serie Navideña","100"),("Esferas","100")');
+			}
+			for (var i = 0; i < len; i++) {
+				var tmpArgs=results.rows.item(i).id_producto + ",'" + results.rows.item(i).nombre+ "','" + results.rows.item(i).cantidad+"'";
+				tblText +='<tr onclick="goPopup('+ tmpArgs + ');"><td>' + results.rows.item(i).id_producto +'</td><td>' + results.rows.item(i).nombre +'</td><td>' + results.rows.item(i).cantidad +'</td></tr>';
+				}
+				tblText +="</table>";
+				document.getElementById("tblDiv").innerHTML =tblText; //Imprimir el valor de la consulta
+        }
+		//Delete query
+		function deleteRow(tx) {
+			tx.executeSql('DELETE FROM producto WHERE id_producto = ' + currentRow, [], queryDB, errorCB);
+			}
+        // Transaction error callback
+        //
+		function errorCB(err) {
+			alert("Error processing SQL: "+err.code);
+        }
+		// Transaction success callback
+        //
+		function successCB() {
+			
+			//sqlitePlugin.openDatabase
+			var db = window.openDatabase("Database", "1.0", "Database", 100000);
+			db.transaction(queryDB, errorCB);
+			}
+			// Cordova is ready
+        //
+		function onDeviceReady() {
+			var db = window.openDatabase("Database", "1.0", "Database", 100000);
+			db.transaction(populateDB, errorCB, successCB);
+			}
+			//Insert query
+        //
+		function insertDB(tx) {
+            tx.executeSql('INSERT INTO producto (nombre,cantidad) VALUES ("' +document.getElementById("txtName").value+'","'+document.getElementById("txtNumber").value+'")');
+			}
+			function goInsert() {
+				var db = window.openDatabase("Database", "1.0", "Database", 100000);
+				db.transaction(insertDB, errorCB, successCB);
+				}
+		    function goSearch() {
+			    var db = window.openDatabase("Database", "1.0", "Database", 100000);
+			    db.transaction(searchQueryDB, errorCB);
+			}
+			function goDelete() {
+				var db = window.openDatabase("Database", "1.0", "Database", 100000);
+				db.transaction(deleteRow, errorCB);
+				document.getElementById('qrpopup').style.display='none';
+				}
+        //Show the popup after tapping a row in table
+        //
+		function goPopup(row,rowname,rownum) {
+			currentRow=row; //Despliega la informacion
+			document.getElementById("qrpopup").style.display="block";
+			document.getElementById("editNameBox").value = rowname;
+			document.getElementById("editNumberBox").value = rownum;
+        }
+		function editRow(tx) {
+			tx.executeSql('UPDATE producto SET nombre ="'+document.getElementById("editNameBox").value+'", cantidad= "'+document.getElementById("editNumberBox").value+ '" WHERE id_producto = '+ currentRow, [], queryDB, errorCB);
+			}
+			function goEdit() {
+				var db = window.openDatabase("Database", "1.0", "Database", 100000);
+				db.transaction(editRow, errorCB);
+				document.getElementById('qrpopup').style.display='none';
+				}
+        //function prueba1(){
+        //var x =  tx.executeSql('SELECT cantidad FROM producto where nombre"='+document.getElementById("editNameBox").value);
+
+        //alert(x);
+        //}    
+
+</script>
+        
+    </head>
+    <body style="background:url(img/casa1.jpg);">
+    <h1>Productos</h1>
+   
+    <div id="qrpopup" >
+    <hr/>
+    <input type="text" id="editNameBox"><br>
+    <input type="text" id="editNumberBox"><br>
+
+    <button onclick="document.getElementById('qrpopup').style.display='none';">Descartar
+    </button>
+    </div>
+    
+    <div data-role="page">
+  <div data-role="header">
+  <h1>DBMezquital</h1>
+  </div>
+
+  <!--<div data-role="main" class="ui-content">
+   
+      <fieldset data-role="collapsible" data-theme="a" data-content-theme="a">
+        <legend>Productos</legend>
+         <div>
+    Nombre del producto<input type="text" id="txtName" placeholder="Producto">
+    Cantidad en existencia<input type="text" id="txtNumber" placeholder="45">
+    <hr/>
+    </div>-->
+    <div id="tblDiv"></div>
+    <div style="text-align: center">
+    <button onClick="successCB();">Mostrar todos</button>
+    </div>
+         
+      </fieldset>
+    
+  </div>
+</div>
+    
+    <!--<script type="text/javascript" src="cordova.js"></script>-->
+    <script src="js/ui.js"></script>
+    </body>
+</html>

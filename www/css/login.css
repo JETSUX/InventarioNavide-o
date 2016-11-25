@@ -1,0 +1,37 @@
+body{
+
+width: 100%;
+background: 
+}
+header{
+	opacity: 1;
+	display: block;
+	border: 2px solid #610B21;
+
+	color: white;
+	border-radius: 25px 25px 0px 0px;
+}
+table{
+float:center;
+border: 2px solid #ccc;
+border-radius: 25px;
+padding: 5px;
+margin-top: 170px;
+color: red;
+background:#FFCDD2;
+}
+
+table:hover{
+		-webkit-transform:scale(1.2) ;
+}
+h1{
+	text-align: center;
+
+}
+p{
+	color: white;
+	font-style: bold;
+	font-family: arial;
+	font-size: 130%;
+
+}
